@@ -1,0 +1,258 @@
+/* Общий контейнер */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  font-family: Arial, sans-serif;
+}
+
+/* Кнопки */
+.button {
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  margin: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.button-blue { background-color: #3b82f6; color: white; }
+.button-blue:hover { background-color: #2563eb; }
+
+.button-green { background-color: #10b981; color: white; }
+.button-green:hover { background-color: #059669; }
+
+.button-indigo { background-color: #6366f1; color: white; }
+.button-indigo:hover { background-color: #4f46e5; }
+
+.button-yellow { background-color: #facc15; color: black; }
+.button-yellow:hover { background-color: #eab308; }
+
+.button-gray { background-color: #6b7280; color: white; }
+.button-gray:hover { background-color: #4b5563; }
+
+/* Поля поиска и формы */
+input[type="text"], input[type="number"], textarea, select {
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  outline: none;
+}
+
+/* Список продуктов */
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.product-item:hover {
+  background-color: #f9fafb;
+}
+
+.product-item .actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Форма */
+.form-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 16px;
+  background-color: white;
+  margin-bottom: 16px;
+}
+
+/* Адаптивность */
+@media (min-width: 640px) {
+  .product-item {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .product-item .actions {
+    margin-top: 0;
+  }
+
+  .search-fields {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  max-width: 90%;
+  width: 400px;
+  max-height: 90%;
+  overflow-y: auto;
+}
+
+img{
+  width: 300px;
+}
+div{
+  padding-bottom: 10px;
+}
+label{
+  padding-right: 10px;
+}
+
+.menu-desktop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* Скрываем десктопное меню на мобильных */
+@media (max-width: 639px) {
+  .menu-desktop {
+    display: none;
+  }
+}
+
+/* Боковое мобильное меню */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -300px; /* полностью за экраном */
+  width: 250px;
+  height: 100%;
+  background-color: #f9fafb;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: right 0.3s ease-in-out;
+  z-index: 60;
+}
+
+/* Открытое меню */
+.side-menu.open {
+  right: 0;
+}
+
+/* Кнопка меню на мобильных */
+.menu-toggle-button {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background-color: #4f46e5;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 18px;
+  z-index: 50;
+}
+
+/* Скрываем кнопку на ПК */
+@media (min-width: 640px) {
+  .menu-toggle-button {
+    display: none;
+  }
+}
+
+/* Затемнение при открытом меню */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 40;
+}
+
+/* Скрываем мобильное меню на ПК полностью */
+@media (min-width: 640px) {
+  .side-menu {
+    display: none;
+  }
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+}
+
+.close-button {
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.test{
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+}
+h1{
+  padding-left: 10px;
+  padding-right: 10px;
+  
+}
