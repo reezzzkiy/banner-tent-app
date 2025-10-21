@@ -45,10 +45,24 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-Для андроид студио
+## Установка и запуск Android через Capacitor
+
+```bash
+# Установить Capacitor
 npm install @capacitor/core @capacitor/cli --save
+
+# Инициализация проекта Capacitor
 npx cap init
+# При запросе введите имя приложения и уникальный идентификатор, например com.example.myapp
+
+# Добавление Android-платформы
 npx cap add android
+
+# Собрать фронтенд
 npm run build
+
+# Синхронизировать изменения с Android
 npx cap sync
+
+# Открыть проект в Android Studio
 npx cap open android
