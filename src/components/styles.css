@@ -58,22 +58,36 @@ input:focus, textarea:focus, select:focus {
 
 .product-item {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
   border: 1px solid #e5e7eb;
-  padding: 12px;
-  border-radius: 6px;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 13px;
   transition: background-color 0.2s;
+  position: relative;
 }
 
 .product-item:hover {
-  background-color: #f9fafb;
+  background-color: #f3f4f6;
 }
 
 .product-item .actions {
   display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+/* Кнопка "..." в правом верхнем углу */
+.actions-mobile {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  z-index: 5;
 }
 
 /* Форма */
@@ -255,4 +269,214 @@ h1{
   padding-left: 10px;
   padding-right: 10px;
   
+}
+
+/* Десктопные кнопки видны только на ПК */
+.actions-mobile {
+  display: none;
+}
+
+/* Только на мобильных показываем кнопки "..." */
+@media (max-width: 768px) {
+  .actions-desktop {
+    display: none;
+  }
+
+  .actions-mobile {
+    display: flex;
+    position: relative;
+    margin-left: auto;
+    align-items: center;
+  }
+
+  .ellipsis-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .actions-popup {
+    position: absolute;
+    bottom: 30px;
+    right: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    z-index: 10;
+  }
+
+  .actions-popup .button {
+    margin: 4px 0;
+    width: 120px;
+  }
+}
+
+
+.button-red {
+  background-color: #ef4444; /* красный фон */
+  color: white; /* текст белый */
+}
+
+.button-red:hover {
+  background-color: #b91c1c; /* темный красный при наведении */
+}
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* плавный скролл на iOS */
+}
+.mobile-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Само модальное окно */
+.mobile-modal {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  padding: 16px;
+  box-sizing: border-box;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+
+/* Заголовок формы */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Кнопка закрытия */
+.close-button {
+  font-size: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Поля формы */
+.mobile-modal input,
+.mobile-modal select,
+.mobile-modal button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  font-size: 16px;
+  border-radius: 6px;
+  /* border: 1px solid #d1d5db; */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.mobile-modal input:focus,
+.mobile-modal select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+  outline: none;
+}
+
+/* Кнопки */
+.button {
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+
+
+/* Мобильная адаптивность */
+@media (max-width: 480px) {
+  .mobile-modal {
+    padding: 12px;
+  }
+
+  .mobile-modal input,
+  .mobile-modal select,
+  .mobile-modal button {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .report-table th,
+  .report-table td {
+    padding: 6px;
+    font-size: 14px;
+  }
+}
+
+.mobile-modal .table-wrapper {
+  overflow-x: hidden; /* убираем прокрутку */
+  width: 100%;
+}
+
+.report-table.mobile-friendly {
+  width: 100%;
+  table-layout: fixed; /* фиксированная ширина колонок */
+  border-collapse: collapse;
+}
+
+.report-table.mobile-friendly th,
+.report-table.mobile-friendly td {
+  padding: 6px 4px; /* уменьшаем padding, чтобы помещалось */
+  border: 1px solid #e5e7eb;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+.report-table.mobile-friendly th {
+  background-color: #f3f4f6;
+  text-align: left;
+}
+
+.report-table.mobile-friendly td {
+  text-align: left;
+}
+
+.mobile-modal .form-header {
+  display: flex;
+  justify-content: space-between; /* заголовок слева, кнопка справа */
+  align-items: center;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.mobile-modal .form-header h3 {
+  margin: 0;
+  font-size: 18px;
+  flex: 1;               /* занимает всю доступную ширину */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;   /* текст в одну строку */
+}
+
+.mobile-modal .form-header .close-button {
+  flex-shrink: 0;        /* кнопка не сжимается */
+  font-size: 24px;
+  width: auto;           /* не растягиваем на всю строку */
+  height: auto;
+  padding: 0 4px;        /* немного отступа */
+  line-height: 1;
 }

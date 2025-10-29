@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { db, Product, Sale } from "../db/db";
+import { db, Product, Sale, ProductTypeEnum } from "../db/db";
 import { v4 as uuidv4 } from "uuid";
 import "./styles.css";
 
@@ -10,6 +10,7 @@ interface SaleFormProps {
 
 export const SaleForm: React.FC<SaleFormProps> = ({ onSave, onClose }) => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [selectedType, setSelectedType] = useState<ProductTypeEnum | "">("");
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -53,9 +54,22 @@ export const SaleForm: React.FC<SaleFormProps> = ({ onSave, onClose }) => {
     onSave?.();
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="test">
-      <div className="form-header">
+  // фильтруем продукты по выбранному типу
+  const filteredProducts = selectedType
+    ? products.filter((p) => p.type === selectedType)
+    : [];
+
+  return ( <div className="mobile-modal-backdrop"
+    
+    onClick={(e) => {
+      // если клик был именно по фону (а не по внутренней форме)
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    }}
+  >
+    <form onSubmit={handleSubmit} className="test" >
+      <div className="form-header" >
         <h3>Добавить продажу</h3>
         <button type="button" className="close-button" onClick={onClose}>
           ×
@@ -63,16 +77,32 @@ export const SaleForm: React.FC<SaleFormProps> = ({ onSave, onClose }) => {
       </div>
 
       <div>
-        <label>Продукт:</label>
-        <select name="productId" className="input-field" required>
-          <option value="">Выберите продукт</option>
-          {products.map((p) => (
-            <option key={p.id} value={p.id}>
-              ({p.type}) — осталось: {p.quantity}
-            </option>
-          ))}
+        <label>Тип продукта:</label>
+        <select
+          className="input-field"
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value as ProductTypeEnum)}
+          required
+        >
+          <option value="">Выберите тип</option>
+          <option value={ProductTypeEnum.Tent}>Тент</option>
+          <option value={ProductTypeEnum.Banner}>Баннер</option>
         </select>
       </div>
+
+      {selectedType && (
+        <div>
+          <label>Продукт:</label>
+          <select name="productId" className="input-field" required>
+            <option value="">Выберите продукт</option>
+            {filteredProducts.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.size}, {p.density} г/м² — осталось: {p.quantity}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div>
         <label>Дата продажи:</label>
@@ -87,18 +117,13 @@ export const SaleForm: React.FC<SaleFormProps> = ({ onSave, onClose }) => {
 
       <div>
         <label>Количество:</label>
-        <input
-          type="number"
-          name="quantity"
-          min={1}
-          className="input-field"
-          required
-        />
+        <input type="number" name="quantity" min={1} className="input-field" required />
       </div>
 
       <button type="submit" className="button button-blue">
         Сохранить продажу
       </button>
     </form>
+    </div>
   );
 };

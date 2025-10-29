@@ -4,11 +4,12 @@ import { ProductTypeEnum } from "../db/db";
 import { ProductForm } from "./ProductForm";
 import { SaleForm } from "./SaleForm";
 import './styles.css';
+import { SaleReportForm } from "./SaleReportForm";
 
 export const SelectProduct: React.FC = () => {
   const [filter, setFilter] = useState<ProductTypeEnum | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [mode, setMode] = useState<"add" | "sell" | null>(null);
+  const [mode, setMode] = useState<"add" | "sell" | "report" | null>(null);
   const [searchSize, setSearchSize] = useState("");
   const [searchDensity, setSearchDensity] = useState("");
   const [menuOpen, setMenuOpen] = useState(false); // состояние меню
@@ -19,6 +20,7 @@ export const SelectProduct: React.FC = () => {
   const handleAddProduct = () => { setMode("add"); setShowForm(true); setMenuOpen(false); };
   const handleSellProduct = () => { setMode("sell"); setShowForm(true); setMenuOpen(false); };
   const handleFormSave = () => { setShowForm(false); setMode(null); };
+  const handleShowReport = () => { setMode("report"); setShowForm(true); setMenuOpen(false); }; // новая кнопка
 
   return (
 <div className="p-4 relative">
@@ -29,6 +31,8 @@ export const SelectProduct: React.FC = () => {
     <button onClick={handleShowTents} className="button button-green">Все тенты</button>
     <button onClick={handleAddProduct} className="button button-indigo">Добавить продукт</button>
     <button onClick={handleSellProduct} className="button button-yellow">Продать продукт</button>
+    <button onClick={handleShowReport} className="button button-purple">Отчет по продажам</button> {/* новая кнопка */}
+
   </div>
 
   {/* Кнопка меню для мобильных */}
@@ -46,6 +50,7 @@ export const SelectProduct: React.FC = () => {
     <button onClick={handleShowTents} className="button button-green w-full">Все тенты</button>
     <button onClick={handleAddProduct} className="button button-indigo w-full">Добавить продукт</button>
     <button onClick={handleSellProduct} className="button button-yellow w-full">Продать продукт</button>
+    <button onClick={handleShowReport} className="button button-purple w-full">Отчет по продажам</button>
   </div>
 {/* Основное содержимое */}
 {showForm && mode === "add" && (
@@ -72,7 +77,15 @@ export const SelectProduct: React.FC = () => {
           filter={filter}
           sizeFilter={searchSize}
           densityFilter={searchDensity}
+          
         />
+      )}
+      {showForm && mode === "report" && (
+        <div className="form-overlay">
+          <SaleReportForm
+            onClose={() => setShowForm(false)}
+          />
+        </div>
       )}
   {/* Затемнение при открытом мобильном меню */}
   {menuOpen && <div className="overlay" onClick={() => setMenuOpen(false)}></div>}

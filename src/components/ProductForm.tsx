@@ -13,6 +13,7 @@ const productSchema = z.object({
   size: z.string().min(1, "Введите размер"),
   density: z.string().min(1, "Введите плотность"),
   price: z.number().min(0, "Цена не может быть отрицательной"),
+  costPrice: z.number().min(0, "Цена закупки не может быть отрицательной"),
   quantity: z.number().min(0, "Количество не может быть отрицательным"),
   description: z.string().optional(),
   imageBase64: z.string().optional(),
@@ -32,6 +33,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
     size: product?.size || "",
     density: product?.density || "", 
     price: product?.price ?? 0, 
+    costPrice: product?.costPrice ?? 0,
     quantity: product?.quantity ?? 0, 
     description: product?.description || "", 
     imageBase64: product?.imageBase64, 
@@ -47,8 +49,13 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
   // Опции плотности
   const bannerDensities = ["330", "450", "450-510"];
   const tentDensities = ["100", "120", "150", "180", "270"];
-
-  const selectedType = watch("type"); // отслеживаем выбранный тип
+  const tentSizes = [
+    "2x3", "3x4", "3x5", "3x6", "3x8",
+    "4x4", "4x5", "4x6", "4x8", "4x10",
+    "5x6", "5x10", "6x6", "6x8", "6x10",
+    "8x8", "8x10", "8x12", "10x10", "10x12", "10x15", "10x20"
+  ];
+  const selectedType = watch("type"); 
 
   useEffect(() => {
     if (product) {
@@ -76,6 +83,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
       size: data.size,
       density: data.density,
       price: data.price,
+      costPrice: data.costPrice,
       quantity: data.quantity,
       description: data.description,
       imageBase64: data.imageBase64,
@@ -125,9 +133,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
     setValue("imageBase64", "");
   };
 
-  return (
+  return ( <div className="mobile-modal-backdrop"
+    
+    onClick={(e) => {
+      // если клик был именно по фону (а не по внутренней форме)
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    }}
+  >
     <form onSubmit={handleSubmit(onSubmit)} className="test" >
-  <div className="form-header">
+      <div className="test">
+  <div className="form-header" >
   <h3>{product ? "Редактировать продукт" : "Добавить продукт"}</h3>
   <button
     type="button"
@@ -148,27 +165,51 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
       </div>
 
       <div>
-        <label>Размер:</label>
-        <input
-          {...register("size", {
-            required: "Введите размер",
-            validate: (value) => {
-              if (!/^\d+x\d+$/.test(value)) return "Размер должен быть в формате NxN";
-              return true;
-            },
-          })}
-          className="input-field"
-          placeholder="например 15x5"
-          onChange={(e) => {
-            let val = e.target.value.replace(/\D/g, ""); 
-            if (val.length >= 2) {
-              const match = val.match(/^(\d{1,2})(\d+)$/); 
-              if (match) val = `${match[2]}x${match[1]}`;
-            }
-            setValue("size", val);
-          }}
-        />
-      </div>
+  <label>Размер:</label>
+  {selectedType === ProductTypeEnum.Tent ? (
+    <select {...register("size")} className="input-field" defaultValue={product?.size || ""}>
+      <option value="">Выберите размер</option>
+      {tentSizes.map(size => (
+        <option key={size} value={size}>{size}</option>
+      ))}
+    </select>
+  ) : (
+    <input
+      {...register("size", {
+        required: "Введите размер",
+        validate: (value) => {
+          if (!/^\d+x\d+$/.test(value)) return "Размер должен быть в формате NxN";
+          return true;
+        },
+      })}
+      className="input-field"
+      placeholder="например 15x5"
+      onChange={(e) => {
+    let val = e.target.value.replace(/\D/g, ""); // 1. Оставляем только цифры
+    
+    if (val.length === 2) {
+      // 2 цифры (например, "34"): делим после ПЕРВОЙ цифры -> "3x4"
+      const firstPart = val.substring(0, 1); 
+      const secondPart = val.substring(1); 
+      val = `${firstPart}x${secondPart}`;
+      
+    } else if (val.length === 3) {
+      // 3 цифры (например, "515"): делим после ПЕРВОЙ цифры -> "5x15"
+      const firstPart = val.substring(0, 1); 
+      const secondPart = val.substring(1); 
+      val = `${firstPart}x${secondPart}`;
+      
+    } else if (val.length >= 4) {
+      // 4 и более цифр (например, "1020"): делим после ВТОРОЙ цифры -> "10x20"
+      const firstPart = val.substring(0, 2); 
+      const secondPart = val.substring(2); 
+      val = `${firstPart}x${secondPart}`;
+    }
+        setValue("size", val);
+      }}
+    />
+  )}
+</div>
 
       <div>
         <label>Плотность:</label>
@@ -181,14 +222,39 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
       </div>
 
       <div>
-        <label>Цена:</label>
-        <input type="number" {...register("price", { valueAsNumber: true })} className="input-field" />
-      </div>
+  <label>Цена:</label>
+  <input
+    type="number"
+    {...register("price", { valueAsNumber: true })}
+    className="input-field"
+    onFocus={(e) => {
+      if (e.target.value === "0") e.target.value = "";
+    }}
+  />
+</div>
+ <div>
+  <label>Цена закупки:</label>
+  <input
+    type="number"
+    {...register("costPrice", { valueAsNumber: true })}
+    className="input-field"
+    onFocus={(e) => {
+      if (e.target.value === "0") e.target.value = "";
+    }}
+  />
+</div>
 
-      <div>
-        <label>Количество:</label>
-        <input type="number" {...register("quantity", { valueAsNumber: true })} className="input-field" />
-      </div>
+<div>
+  <label>Количество:</label>
+  <input
+    type="number"
+    {...register("quantity", { valueAsNumber: true })}
+    className="input-field"
+    onFocus={(e) => {
+      if (e.target.value === "0") e.target.value = "";
+    }}
+  />
+</div>
 
       <div>
         <label>Описание:</label>
@@ -211,6 +277,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
       </div>
 
       <button type="submit" className="button button-blue">Сохранить</button>
+      </div>
     </form>
+    </div>
   );
 };

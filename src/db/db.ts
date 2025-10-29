@@ -13,6 +13,7 @@ export interface Product {
   size: string;          // размер (например "2x3 м")
   density: string;       // плотность (например "440 г/м²")
   price: number;         // стоимость
+  costPrice?: number;   // цена закупки
   quantity: number;      // количество проданных
   description?: string;   // описание
   imageBase64?: string;  // фото в Base64
@@ -27,7 +28,7 @@ export class BannerTentDB extends Dexie {
   constructor() {
     super("BannerTentDB");
 
-    this.version(1).stores({
+    this.version(2).stores({
       products: "id, type, name, createdAt",
       sales: "id, productId, date",
     });
